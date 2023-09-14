@@ -1,0 +1,90 @@
+infoYad() {
+#echo entre en infoYad
+titulo="$1"
+texto="$2"
+  yad --title="${titulo}" \
+    --image=gtk-info \
+    --center \
+    --width=340 \
+    --height=80 \
+    --text-align=center \
+    --text="${texto}" \
+    --button=Aceptar
+}
+
+
+# programa principal
+usr=Ingrese usuario
+dir=/home/carpeta
+com='Nombre de usuario'
+pas=secreta
+par=secreta
+usuario=$(yad --form \
+  --title="Alta de usuario" \
+  --date-format="%-d/%m/%Y" \
+  --width=400 \
+  --height=300 \
+  --center \
+  --field="Nombre de usuario: " "$usr" \
+  --field="Directorio de inicio: " "$dir" \
+  --field="Nombre a mostrar: " "$com" \
+  --field="Contraseña: ":H "$pas" \
+  --field="Repita contraseña: ":H "$par" )
+
+
+# monitoreo de la variable total
+echo $usuario
+
+# salida de emergencia
+#exit
+
+# desmembrado de componentes : pisamos los valores anteriores
+usr=$(echo $usuario | cut -f1 -d'|')
+dir=$(echo $usuario | cut -f2 -d'|')
+com=$(echo $usuario | cut -f3 -d'|')
+pwd=$(echo $usuario | cut -f4 -d'|')
+par=$(echo $usuario | cut -f5 -d'|')
+idc="/bin/bash"
+
+# monitoreo de variables extraidas
+echo -e user : "\t\t\t" $usr
+echo -e home : "\t\t\t" $dir
+echo -e coments : "\t\t" $com
+echo -e password : "\t\t" $pwd
+echo -e password again : "\t" $par
+echo -e shell : "\t\t" $idc
+
+# ensamblado de orden useradd
+# vua : variable useradd
+vua='useradd -d '$dir' -m -c "'$com'" -s '$idc' '$usr
+vua='useradd -d '$dir' -m -c '\'$com\'' -s '$idc' '$usr
+echo $vua # monitoreo
+# intento de creacion efectiva del usuario (ejecuto la variable vua)
+#$($vua)
+#$vua
+# cambio a pasar por tuberia el contenido de la variable, a bash
+# (metodo anterior fallaba con los espacios)
+echo $vua | bash
+res=$?
+titulo=' * ALTA de USUARIO * '
+#echo $titulo
+#exit
+if [ $res -eq 0 ]
+then
+  texto="<span weight=\"bold\" foreground=\"green\">Alta : </span> exitosa !"
+  infoYad "$titulo" "$texto"
+else
+  texto="<span weight=\"bold\" foreground=\"green\">Alta : </span> fallida !"
+  infoYad "$titulo" "$texto"
+fi
+
+echo $usr:$pwd | chpasswd
+res=$?
+if [ $res -eq 0 ]
+then
+  texto="<span weight=\"bold\" foreground=\"green\">asignación contraseña : </span> exitosa !"
+  infoYad "$titulo" "$texto"
+else
+  texto="<span weight=\"bold\" foreground=\"green\">asignación contraseña : </span> fallida !"
+  infoYad "$titulo" "$texto"
+fi
