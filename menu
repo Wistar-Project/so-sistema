@@ -1,5 +1,4 @@
 infoYad() {
-#echo entre en infoYad
 titulo="$1"
 texto="$2"
   yad --title="${titulo}" \
@@ -32,7 +31,7 @@ sal=$(yad --form \
   --center \
   --field="Nombre de usuario:" "$usr" )
 
-if [ $? -ne 0 ]; then return; fi # Escape, Cancelar, cruz : vuelvo al invocante
+if [ $? -ne 0 ]; then return; fi
 
 usr=$(echo $sal | cut -f1 -d'|')
 ls /home/ > users.txt
@@ -159,7 +158,6 @@ idc="/bin/bash"
 
 dir="/home/$usr"
 
-# monitoreo de variables extraidas
 echo -e user : "\t\t\t" $usr
 echo -e home : "\t\t\t" $dir
 echo -e coments : "\t\t" $com
@@ -174,8 +172,6 @@ echo $vua
 echo $vua | bash
 res=$?
 titulo=' * ALTA de USUARIO * '
-#echo $titulo
-#exit
 if [ $res -eq 0 ]
 then
   texto="<span weight=\"bold\" foreground=\"green\">Alta : </span> Usuario creado con éxito."
