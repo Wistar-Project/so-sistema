@@ -14,7 +14,7 @@ texto="$2"
 
 
 # programa principal
-usr=Ingrese usuario
+usr='Ingrese usuario'
 dir=/home/carpeta
 com='Nombre de usuario'
 pas=secreta
@@ -71,10 +71,10 @@ titulo=' * ALTA de USUARIO * '
 #exit
 if [ $res -eq 0 ]
 then
-  texto="<span weight=\"bold\" foreground=\"green\">Alta : </span> exitosa !"
+  texto="<span weight=\"bold\" foreground=\"green\">Alta : </span> Usuario creado con éxito."
   infoYad "$titulo" "$texto"
 else
-  texto="<span weight=\"bold\" foreground=\"green\">Alta : </span> fallida !"
+  texto="<span weight=\"bold\" foreground=\"green\">Alta : </span> No se ha podido crear el usuario."
   infoYad "$titulo" "$texto"
 fi
 
@@ -82,9 +82,10 @@ echo $usr:$pwd | chpasswd
 res=$?
 if [ $res -eq 0 ]
 then
-  texto="<span weight=\"bold\" foreground=\"green\">asignación contraseña : </span> exitosa !"
+  texto="<span weight=\"bold\" foreground=\"green\">asignación contraseña : </span> Contraseña asignada exitosamente."
   infoYad "$titulo" "$texto"
 else
-  texto="<span weight=\"bold\" foreground=\"green\">asignación contraseña : </span> fallida !"
+  texto="<span weight=\"bold\" foreground=\"green\">asignación contraseña : </span> Ha ocurrido un error. No se ha podido asignar la contraseña."
   infoYad "$titulo" "$texto"
 fi
+clear
