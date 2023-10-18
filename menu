@@ -11,6 +11,7 @@ texto="$2"
     --button=Aceptar
 }
 
+
 ListU() {
 ls /home/
 #ls /home/ > usuarios.txt
@@ -227,7 +228,6 @@ do
 done
 }
 
-
 # programa principal
 while true
 do
@@ -239,16 +239,16 @@ do
     --center \
     --text="Seleccione una opción: " \
     --column="ABM U / L" \
-    "Usuarios" "Registros (logs)" "Salir (Esc)")
+    "Usuarios" "Logs" "Salir (Esc)")
   ans=$?
   if [ $ans -eq 0 ]
   then
-    clear
+    #clear
     case $opcion in
     Usuarios*)
       Usuarios;;
     Logs*)
-      Logs;;
+      ./logs;;
     Salir*)
       exit;;
     esac

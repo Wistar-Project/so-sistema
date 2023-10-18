@@ -1,0 +1,58 @@
+binpath=/home/SISRDadmin/bin
+cd $binpath
+
+LoginL() {
+while true
+do
+  opcion=$(yad --list \
+    --title="Login" \
+    --height=300 \
+    --width=300 \
+    --button=Aceptar:0 \
+    --center \
+    --text="Selecciona E F: " \
+    --column="EF Login" \
+    "Exitoso" "Fallido" "Salir (Esc)")
+  ans=$?
+  if [ $ans -eq 0 ]
+  then
+    case $opcion in
+    Exitoso*)
+       ./slogin-log;;
+    Fallido*)
+      ./flogin-log;;
+    Salir*)
+      return;;
+    esac
+  else
+    return
+  fi
+done
+}
+
+while true
+do
+  opcion=$(yad --list \
+    --title="MENU Logs" \
+    --height=300 \
+    --width=300 \
+    --button=Aceptar:0 \
+    --center \
+    --text="Selecciona L S:" \
+    --column="LS Logs" \
+    "Login" "Sudo" "Salir (Esc)")
+  ans=$?
+  if [ $ans -eq 0 ]
+  then
+    case $opcion in
+    Login*)
+      LoginL;;
+    Sudo*)
+      SudoL;;
+    Salir*)
+      exit;;
+    esac
+  else
+    exit
+  fi
+done
