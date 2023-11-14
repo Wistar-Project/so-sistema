@@ -1,0 +1,105 @@
+infoYad() {
+titulo="$1"
+texto="$2"
+  yad --title="${titulo}" \
+    --image=gtk-info \
+    --center \
+    --width=340 \
+    --height=80 \
+    --text-align=center \
+    --text="${texto}" \
+    --button=Aceptar
+}
+
+Ence() {
+sudo systemctl start firewalld
+res=$?
+
+titulo='Encender Firewall'
+if [ $res -eq 0 ]
+then
+  texto="<span weight=\"bold\" foreground=\"green\">Firewall: </span> Servicio encendido con éxito."
+  infoYad "$titulo" "$texto"
+else
+  texto="<span weight=\"bold\" foreground=\"green\">Firewall: </span> No se ha podido encender el servicio, revisa su estado."
+  infoYad "$titulo" "$texto"
+fi
+}
+
+Apag() {
+sudo systemctl stop firewalld
+res=$?
+
+titulo='Apagar Firewall'
+if [ $res -eq 0 ]
+then
+  texto="<span weight=\"bold\" foreground=\"green\">Firewall: </span> Servicio detenido con éxito."
+  infoYad "$titulo" "$texto"
+else
+  texto="<span weight=\"bold\" foreground=\"green\">Fireall: </span> No se ha podido detener el servicio, revisa su estado."
+  infoYad "$titulo" "$texto"
+fi
+}
+
+Hab() {
+sudo systemctl enable firewalld
+res=$?
+
+titulo='Habilitar Firewall'
+if [ $res -eq 0 ]
+then
+  texto="<span weight=\"bold\" foreground=\"green\">Firewall: </span> Servicio habilitado con éxito."
+  infoYad "$titulo" "$texto"
+else
+  texto="<span weight=\"bold\" foreground=\"green\">Firewall: </span> No se ha podido habilitar el servicio, revisa su estado."
+  infoYad "$titulo" "$texto"
+fi
+}
+
+Des() {
+sudo systemctl disable firewalld
+res=$?
+
+titulo='Deshabilitar Firewall'
+if [ $res -eq 0 ]
+then
+  texto="<span weight=\"bold\" foreground=\"green\">Firewall: </span> Servicio deshabilitado con éxito."
+  infoYad "$titulo" "$texto"
+else
+  texto="<span weight=\"bold\" foreground=\"green\">Firewall: </span> No se ha podido deshabilitar el servicio, revisa su estado."
+  infoYad "$titulo" "$texto"
+fi
+}
+
+while true
+do
+  estado=$(sudo systemctl is-active firewalld)
+  estado1=$(sudo systemctl is-enabled firewalld)	
+  opcion=$(yad --list \
+    --title="Firewall" \
+    --height=300 \
+    --width=300 \
+    --button=Aceptar:0 \
+    --center \
+    --text="Ejecución=$estado" \
+    --column="Estado=$estado1" \
+    "Encender" "Apagar" "Habilitar" "Deshabilitar" "Salir (Esc)")
+  ans=$?
+  if [ $ans -eq 0 ]
+  then
+    case $opcion in
+    Encender*)
+      Ence;;
+    Apagar*)
+      Apag;;
+    Habilitar*)
+      Hab;;
+    Deshabilitar*)
+      Des;;
+    Salir*)
+      exit;;
+    esac
+  else
+    exit
+  fi
+done

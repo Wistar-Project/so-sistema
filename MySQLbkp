@@ -1,0 +1,4 @@
+fecha=$(date)
+echo Respaldo iniciado: $(date)
+mysqldump --no-tablespaces gotruck -u SISRDadmin >/home/SISRDadmin/bkp/$fecha.sql
+echo Respaldo finalizado: $(date)

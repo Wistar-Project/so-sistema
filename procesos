@@ -1,0 +1,136 @@
+infoYad() {
+titulo="$1"
+texto="$2"
+  yad --title="${titulo}" \
+    --image=gtk-info \
+    --center \
+    --width=340 \
+    --height=80 \
+    --text-align=center \
+    --text="${texto}" \
+    --button=Aceptar
+}
+
+List() {
+arch_sal=$(pwd)"/proc.out"
+
+ps s| awk '{ print $2, $8, $9, $10}'| sed '1d' > $arch_sal
+
+yad --list=" * Listado de usuarios * " \
+  --width=810 \
+  --height=500 \
+  --center\
+  --column "ID del proceso (PID)"\
+  --column "Nombre del terminal (TTY)"\
+  --column "Tiempo de ejecución (TIME)"\
+  --column "Nombre del comando (CMD)"\
+	 $(cat $arch_sal) \
+  --title "Lista de Procesos"
+  --text "Procesos ejecutándose actualmente:" 2>/dev/null
+
+
+if [ $? -ne 0 ]; then return; fi
+
+}
+
+Deten(){
+ps s| awk '{ print $2, $8, $9, $10}'
+proc=proceso
+proceso=$(yad --form \
+  --title="Detener Proceso" \
+  --width=400 \
+  --height=100 \
+  --center \
+  --field="ID (IDP) del proceso: " "$proc" )
+
+if [ $? -ne 0 ]; then return; fi
+
+echo $proceso
+
+proc=$(echo $proceso | cut -f1 -d'|')
+
+vud='kill '$proc
+echo $vud
+$vud
+
+if [ $? -eq 0 ]
+then
+  texto="<span weight=\"bold\" foreground=\"green\">Proceso: </span> El proceso "$proc" se ha detenido con éxito"
+  yad --title="Proceso Detenido" \
+    --image=gtk-info \
+    --center \
+    --width=340 \
+    --height=80 \
+    --text-align=center \
+    --text="${texto}" \
+    --button=Aceptar
+else
+  texto="<span weight=\"bold\" foreground=\"green\">Proceso: </span> Ha ocurrido un error. No se ha podido detener el proceso"
+  yad --title="Proceso no Detenido" \
+    --image=gtk-info \
+    --center \
+    --width=340 \
+    --height=80 \
+    --text-align=center \
+    --text="${texto}" \
+    --button=Aceptar
+fi
+}
+
+Busc() {
+proc=proceso
+sal=$(yad --form \
+  --title="Buscar Proceso " \
+  --width=400 \
+  --height=100 \
+  --center \
+  --field="ID o Nombre de proceso a buscar" "$proc" )
+
+if [ $? -ne 0 ]; then return; fi
+
+proc=$(echo $sal | cut -f1 -d'|')
+ps s | awk '{ print $2, $8, $9, $10}'> proc.out
+clear
+echo "PID   TTY   TIME COMMAND" 
+grep "$proc" proc.out 2>/dev/null
+res=$?
+
+titulo='Buscar Proceso'
+if [ $res -eq 0 ]
+then
+  texto="<span weight=\"bold\" foreground=\"green\">Proceso: </span> Proceso encontrado\n$usr"
+  infoYad "$titulo" "$texto"
+else
+  texto="<span weight=\"bold\" foreground=\"green\">Proceso: </span> No se ha encontrado el proceso."
+  infoYad "$titulo" "$texto"
+fi
+}
+
+while true
+do
+  opcion=$(yad --list \
+    --title="Administrador de procesos" \
+    --height=300 \
+    --width=300 \
+    --button=Aceptar:0 \
+    --center \
+    --text="Seleccione una opción: " \
+    --column="Opciones:" \
+    "Listar" "Buscar" "Detener" "Salir (Esc)")
+  ans=$?
+  if [ $ans -eq 0 ]
+  then
+    case $opcion in
+    Listar*)
+      List;;
+    Buscar*)
+      Busc;;
+    Detener*)
+      Deten;;
+    Salir*)
+      exit;;
+    esac
+  else
+    exit
+  fi
+done

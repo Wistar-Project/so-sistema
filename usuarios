@@ -11,22 +11,19 @@ texto="$2"
     --button=Aceptar
 }
 
-ListU() {
-users=$(pwd)"/users.txt"
-ls /home/ > users.txt
+List() {
 yad --list=" * Listado de usuarios * " \
   --width=500 \
   --height=300 \
   --column "Usuarios"\
 	 $(ls /home/) \
   --title "Lista de usuarios"
-  --text "Usuarios encontrados en /home" >/dev/null
 
 if [ $? -ne 0 ]; then return; fi
 
 }
 
-ConsU() {
+Cons() {
 usr=usuario
 sal=$(yad --form \
   --title=" * Consulta Usuario * " \
@@ -38,11 +35,10 @@ sal=$(yad --form \
 if [ $? -ne 0 ]; then return; fi
 
 usr=$(echo $sal | cut -f1 -d'|')
-ls /home/ > users.txt
-grep "$usr" users.txt 2>/dev/null
+consulta=$(ls /home/ | grep "$usr")
 res=$?
 
-titulo=' * Consulta de Usuario * '
+titulo='Consulta de Usuario'
 if [ $res -eq 0 ]
 then
   texto="<span weight=\"bold\" foreground=\"green\">Consulta : </span> Usuario encontrado.\n$usr"
@@ -53,7 +49,7 @@ else
 fi
 }
 
-#ModifU() {
+#Modif() {
 #usr=usuario
 #nusr="nuevo usuario"
 #sal=$(yad --form \
@@ -87,7 +83,7 @@ fi
 #fi
 #}
 
-BajaU(){
+Baja(){
 usr=usuario
 usuario=$(yad --form \
   --title="Baja de usuario" \
@@ -111,7 +107,7 @@ $vud
 if [ $? -eq 0 ]
 then
   texto="<span weight=\"bold\" foreground=\"green\">Baja : </span> Usuario removido con éxito"
-  yad --title=" * BAJA de USUARIO * " \
+  yad --title="Baja de Usuario" \
     --image=gtk-info \
     --center \
     --width=340 \
@@ -121,7 +117,7 @@ then
     --button=Aceptar
 else
   texto="<span weight=\"bold\" foreground=\"green\">Baja : </span> Ha ocurrido un error. No se ha podido remover el usuario"
-  yad --title=" * BAJA de USUARIO * " \
+  yad --title="Baja de Usuario" \
     --image=gtk-info \
     --center \
     --width=340 \
@@ -132,7 +128,7 @@ else
 fi
 }
 
-AltaU() {
+Alta() {
 usr='Ingrese usuario'
 com='Nombre de usuario'
 pas=secreta
@@ -174,7 +170,7 @@ echo $vua
 
 echo $vua | bash
 res=$?
-titulo=' * ALTA de USUARIO * '
+titulo='Alta de Usuario'
 if [ $res -eq 0 ]
 then
   texto="<span weight=\"bold\" foreground=\"green\">Alta : </span> Usuario creado con éxito."
@@ -198,9 +194,8 @@ fi
 
 while true
 do
-  clear
   opcion=$(yad --list \
-    --title=" * MENU usuarios * " \
+    --title="Menu Usuarios" \
     --height=300 \
     --width=300 \
     --button=Aceptar:0 \
@@ -213,13 +208,13 @@ do
   then
     case $opcion in
     Alta*)
-      AltaU;;
+      Alta;;
     Baja*)
-      BajaU;;
+      Baja;;
     Consulta*)
-      ConsU;;
+      Cons;;
     Listado*)
-      ListU;;
+      List;;
     Salir*)
       exit;;
     esac

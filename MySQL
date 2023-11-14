@@ -1,0 +1,124 @@
+infoYad() {
+titulo="$1"
+texto="$2"
+  yad --title="${titulo}" \
+    --image=gtk-info \
+    --center \
+    --width=340 \
+    --height=80 \
+    --text-align=center \
+    --text="${texto}" \
+    --button=Aceptar
+}
+
+Ence() {
+sudo systemctl start mysqld
+res=$?
+
+titulo='Encender MySQL'
+if [ $res -eq 0 ]
+then
+  texto="<span weight=\"bold\" foreground=\"green\">MySQL: </span> Servicio encendido con éxito."
+  infoYad "$titulo" "$texto"
+else
+  texto="<span weight=\"bold\" foreground=\"green\">MySQL: </span> No se ha podido encender el servicio, revisa su estado."
+  infoYad "$titulo" "$texto"
+fi
+}
+
+Apag() {
+sudo systemctl stop mysqld
+res=$?
+
+titulo='Apagar MySQL'
+if [ $res -eq 0 ]
+then
+  texto="<span weight=\"bold\" foreground=\"green\">MySQL: </span> Servicio detenido con éxito."
+  infoYad "$titulo" "$texto"
+else
+  texto="<span weight=\"bold\" foreground=\"green\">MySQL: </span> No se ha podido detener el servicio, revisa su estado."
+  infoYad "$titulo" "$texto"
+fi
+}
+
+Hab() {
+sudo systemctl enable mysqld
+res=$?
+
+titulo='Habilitar MySQL'
+if [ $res -eq 0 ]
+then
+  texto="<span weight=\"bold\" foreground=\"green\">MySQL: </span> Servicio habilitado con éxito."
+  infoYad "$titulo" "$texto"
+else
+  texto="<span weight=\"bold\" foreground=\"green\">MySQL: </span> No se ha podido habilitar el servicio, revisa su estado."
+  infoYad "$titulo" "$texto"
+fi
+}
+
+Des() {
+sudo systemctl disable mysqld
+res=$?
+
+titulo='Deshabilitar MySQL'
+if [ $res -eq 0 ]
+then
+  texto="<span weight=\"bold\" foreground=\"green\">MySQL: </span> Servicio deshabilitado con éxito."
+  infoYad "$titulo" "$texto"
+else
+  texto="<span weight=\"bold\" foreground=\"green\">MySQL: </span> No se ha podido deshabilitar el servicio, revisa su estado."
+  infoYad "$titulo" "$texto"
+fi
+}
+
+Ver() {
+yad --list="Respaldos" \
+  --width=600 \
+  --height=400 \
+  --column "Día"\
+  --column "Mes"\
+  --column "Fecha"\
+  --column "Hora"\
+  --column "Año"\
+	 $(ls /home/SISRDadmin/bkp) \
+  --title "Lista de backups"
+  --text "Lista de backups encontrados en /home/bkp" 2>/dev/null
+
+if [ $? -ne 0 ]; then return; fi
+}
+
+
+while true
+do
+  estado=$(sudo systemctl is-active mysqld)
+  estado1=$(sudo systemctl is-enabled mysqld)	
+  opcion=$(yad --list \
+    --title="Respaldos" \
+    --height=300 \
+    --width=300 \
+    --button=Aceptar:0 \
+    --center \
+    --text="Ejecución=$estado" \
+    --column="Estado=$estado1" \
+    "Encender" "Apagar" "Habilitar" "Deshabilitar" "Ver Respaldos" "Salir (Esc)")
+  ans=$?
+  if [ $ans -eq 0 ]
+  then
+    case $opcion in
+    Encender*)
+      Ence;;
+    Apagar*)
+      Apag;;
+    Habilitar*)
+      Hab;;
+    Deshabilitar*)
+      Des;;
+    "Ver Respaldos"*)
+      Ver;;
+    Salir*)
+      exit;;
+    esac
+  else
+    exit
+  fi
+done

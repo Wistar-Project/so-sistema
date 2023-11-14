@@ -1,16 +1,22 @@
-# programa principal
+Apagar() {
+sudo shutdown -h now
+}
+
+Reiniciar() {
+reboot
+}
+
 while true
 do
-  clear
   opcion=$(yad --list \
-    --title=" * MENU Administración del sistema * " \
-    --height=300 \
+    --title="MENU Administración del sistema" \
+    --height=350 \
     --width=300 \
     --button=Aceptar:0 \
     --center \
     --text="Seleccione una opción: " \
-    --column="ABM U / L" \
-    "Usuarios" "Logs" "Salir (Esc)")
+    --column="Acciones" \
+    "Usuarios" "Logs" "Procesos" "Firewall" "SSH" "MySQL" "Apagar Sistema" "Reiniciar Sistema" "Salir (Esc)")
   ans=$?
   if [ $ans -eq 0 ]
   then
@@ -19,6 +25,18 @@ do
       ./usuarios;;
     Logs*)
       ./logs;;
+    Procesos*)
+      ./procesos;;
+   Firewall*)
+      ./firewall;;
+   SSH*)
+      ./SSH;;
+    MySQL*)
+      ./MySQL;;
+    "Apagar Sistema"*)
+    Apagar;;
+    "Reiniciar Sistema"*)
+    Reiniciar;;
     Salir*)
       exit;;
     esac

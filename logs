@@ -1,6 +1,3 @@
-binpath=/home/SISRDadmin/bin
-cd $binpath
-
 LoginL() {
 while true
 do

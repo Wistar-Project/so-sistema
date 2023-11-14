@@ -1,0 +1,5 @@
+arch_sal=/home/SISRDadmin/bin/flogin-log.out
+sudo cat /var/log/secure | awk '$5="unix-chkpwd" && $6" "$7" "$8=="password check failed" { print $1"_"$2, $3, $11}' >$arch_sal
+yad --width=650 --height=234 --list --column "Dia" --column "Hora" --column "Usuario" \
+ $(cat $arch_sal) \
+ --title "Sesión iniciada" --text "Listado de inicio de sesión fallidos" >/dev/null
