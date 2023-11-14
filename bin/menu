@@ -6,7 +6,6 @@ Reiniciar() {
 reboot
 }
 
-cd bin
 while true
 do
   opcion=$(yad --list \
