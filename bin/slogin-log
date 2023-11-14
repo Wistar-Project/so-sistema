@@ -1,6 +1,6 @@
 arch_sal=/home/SISRDadmin/bin/slogin-log.out
 sudo cat /var/log/secure | awk '$5=="gdm-password]:" && $7" "$8" "$9=="unlocked login keyring" { print $1"_"$2, $3}' >$arch_sal
-yad --width=650 --height=234 --list --column "Dia" --column "Hora" \
+yad --width=650 --height=234 --center --list --column "Dia" --column "Hora" \
  $(cat $arch_sal) \
  --title "Sesión iniciada" --text "Listado de inicio de sesión exitosos" >/dev/null
 

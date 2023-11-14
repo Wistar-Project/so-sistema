@@ -15,6 +15,7 @@ List() {
 yad --list=" * Listado de usuarios * " \
   --width=500 \
   --height=300 \
+  --center \
   --column "Usuarios"\
 	 $(ls /home/) \
   --title "Lista de usuarios"
